@@ -136,7 +136,14 @@ User Task
 
 ## Installation
 
-### From Source (Recommended)
+### Official Releases
+
+GitHub Releases are the official installation source for K-Unity-Yamae.
+Use the latest release from:
+
+https://github.com/JayWuu-da/K-Unity-Yamae/releases
+
+### From Source (Contributors)
 
 ```bash
 # Clone the repository
