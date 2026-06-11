@@ -124,6 +124,8 @@ class BaseAgent(ABC):
             "unity.editor-runtime-boundary": "editor_runtime_boundary.md",
             "unity.resources-addressables": "resources_addressables.md",
             "unity.ui": "ui.md",
+            "unity.execution-path": "execution_path.md",
+            "unity.data-contracts": "data_contracts.md",
             "unity.graphics-platform": "graphics_platform.md",
             "unity.architecture-patterns": "architecture_patterns.md",
         }

@@ -60,3 +60,48 @@ def test_context_pack_selects_graphics_rules_for_texture_task(tmp_path: Path) ->
         "Compare Android, iOS, and PC import overrides before recommending changes."
         in context["manual_checks"]
     )
+
+
+def test_context_pack_selects_execution_path_rule_for_ui_route_task(tmp_path: Path) -> None:
+    create_ui_project(tmp_path)
+    config = load_config(tmp_path)
+    UnityProjectScanner(tmp_path, config).scan(deep=True)
+    risk_report = RiskClassifier(config).classify(
+        "Fix the shop popup button route and controller reset path", {}
+    )
+
+    context = ContextSelector(tmp_path, config).select(
+        "Fix the shop popup button route and controller reset path",
+        risk_report,
+        "standard",
+    )
+
+    assert "unity.execution-path" in context["rule_cards"]
+    assert (
+        "Trace the real user path before editing: entry point, open/create call, "
+        "prefab or listener binding, controller reset, lock conditions, and final renderer."
+        in context["manual_checks"]
+    )
+
+
+def test_context_pack_selects_data_contract_rule_for_payload_task(tmp_path: Path) -> None:
+    create_ui_project(tmp_path)
+    config = load_config(tmp_path)
+    UnityProjectScanner(tmp_path, config).scan(deep=True)
+    risk_report = RiskClassifier(config).classify(
+        "Verify reward table localization and final packet payload contract", {}
+    )
+
+    context = ContextSelector(tmp_path, config).select(
+        "Verify reward table localization and final packet payload contract",
+        risk_report,
+        "standard",
+    )
+
+    assert "unity.data-contracts" in context["rule_cards"]
+    assert "unity.execution-path" not in context["rule_cards"]
+    assert (
+        "Verify source table rows, localization keys, displayed text, request/response DTOs, "
+        "final payload shape, merge rules, and response apply path."
+        in context["manual_checks"]
+    )

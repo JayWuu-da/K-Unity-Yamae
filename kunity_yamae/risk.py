@@ -23,6 +23,8 @@ class RiskClassifier:
         semantic_risk += self._check_editor_runtime_boundary(task_lower, triggers)
         semantic_risk += self._check_resources_addressables(task_lower, triggers)
         semantic_risk += self._check_ui_interaction(task_lower, triggers)
+        semantic_risk += self._check_execution_path(task_lower, triggers)
+        semantic_risk += self._check_data_contract(task_lower, triggers)
         semantic_risk += self._check_graphics_platform(task_lower, triggers)
         semantic_risk += self._check_architecture_pattern(task_lower, triggers)
         semantic_risk += self._check_asmdef_change(task_lower, triggers)
@@ -128,6 +130,47 @@ class RiskClassifier:
         if any(keyword in task_lower for keyword in keywords):
             triggers.append("Unity UI interaction/hierarchy")
             return 25
+        return 0
+
+    def _check_execution_path(self, task_lower: str, triggers: list) -> int:
+        keywords = [
+            "route",
+            "routing",
+            "popup",
+            "openpopup",
+            "createpopup",
+            "shortcut",
+            "listener",
+            "binding",
+            "controller reset",
+            "reset path",
+            "tab",
+            "lock condition",
+        ]
+        if self._has_task_keyword(task_lower, keywords):
+            triggers.append("Unity execution path tracing")
+            return 20
+        return 0
+
+    def _check_data_contract(self, task_lower: str, triggers: list) -> int:
+        keywords = [
+            "table",
+            "localization",
+            "locale",
+            "packet",
+            "payload",
+            "dto",
+            "response",
+            "contract",
+            "server",
+            "backend",
+            "reward",
+            "rewards",
+            "merge",
+        ]
+        if self._has_task_keyword(task_lower, keywords):
+            triggers.append("Unity data contract/payload")
+            return 30
         return 0
 
     def _check_graphics_platform(self, task_lower: str, triggers: list) -> int:
@@ -260,6 +303,8 @@ class RiskClassifier:
             "Editor/runtime boundary": "unity.editor-runtime-boundary",
             "Resources/Addressables path change": "unity.resources-addressables",
             "Unity UI interaction/hierarchy": "unity.ui",
+            "Unity execution path tracing": "unity.execution-path",
+            "Unity data contract/payload": "unity.data-contracts",
             "Graphics/import platform settings": "unity.graphics-platform",
             "Unity architecture pattern": "unity.architecture-patterns",
             "Assembly definition change": "unity.asmdef",
@@ -298,3 +343,10 @@ class RiskClassifier:
         else:
             lines.append("High risk; migration-level guardrails and evidence required.")
         return " ".join(lines)
+
+    @staticmethod
+    def _has_task_keyword(task_lower: str, keywords: list[str]) -> bool:
+        return any(
+            re.search(rf"(?<![a-z0-9_]){re.escape(keyword)}(?![a-z0-9_])", task_lower)
+            for keyword in keywords
+        )

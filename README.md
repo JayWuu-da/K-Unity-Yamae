@@ -441,6 +441,8 @@ risk_score = min(100, file_risk + action_risk + semantic_unity_risk)
 | MonoBehaviour lifecycle | +20 | "Add start delay to spawner" |
 | Editor/runtime boundary | +25 | "Add custom inspector" |
 | Resources/Addressables | +30 | "Change Resources.Load path" |
+| Execution path tracing | +20 | "Fix popup route or controller reset path" |
+| Data contract/payload | +30 | "Verify reward table localization and packet payload" |
 | Assembly definition | +50 | "Change asmdef references" |
 | Package/settings change | +45 | "Upgrade Input System" |
 | Asset move | +50 | "Move prefabs to new folder" |

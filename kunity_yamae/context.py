@@ -1,5 +1,6 @@
 """Context selector - provides only relevant files and rule cards for a task."""
 
+import re
 from pathlib import Path
 
 from .constants import GENERATED_FOLDERS
@@ -101,6 +102,50 @@ class ContextSelector:
             checks.append(
                 "Verify EventSystem, GraphicRaycaster, interactable state, and raycast blockers."
             )
+        if self._has_task_keyword(
+            task_lower,
+            [
+                "route",
+                "routing",
+                "popup",
+                "openpopup",
+                "createpopup",
+                "shortcut",
+                "listener",
+                "binding",
+                "controller reset",
+                "reset path",
+                "tab",
+                "lock condition",
+            ],
+        ):
+            checks.append(
+                "Trace the real user path before editing: entry point, open/create call, "
+                "prefab or listener binding, controller reset, lock conditions, and final renderer."
+            )
+        if self._has_task_keyword(
+            task_lower,
+            [
+                "table",
+                "tables",
+                "localization",
+                "locale",
+                "packet",
+                "payload",
+                "dto",
+                "response",
+                "contract",
+                "server",
+                "backend",
+                "reward",
+                "rewards",
+                "merge",
+            ],
+        ):
+            checks.append(
+                "Verify source table rows, localization keys, displayed text, "
+                "request/response DTOs, final payload shape, merge rules, and response apply path."
+            )
         if any(token in task_lower for token in ["prefab", "scene", "hierarchy"]):
             checks.append(
                 "Verify prefab overrides, missing scripts, active hierarchy, "
@@ -160,6 +205,13 @@ class ContextSelector:
         path_lower = path.lower()
         task_tokens = {token for token in task_lower.replace("/", " ").split() if len(token) > 2}
         return any(token in path_lower for token in task_tokens)
+
+    @staticmethod
+    def _has_task_keyword(task_lower: str, keywords: list[str]) -> bool:
+        return any(
+            re.search(rf"(?<![a-z0-9_]){re.escape(keyword)}(?![a-z0-9_])", task_lower)
+            for keyword in keywords
+        )
 
     def _infer_target_files(self, task: str) -> list[str]:
         task_lower = task.lower()
