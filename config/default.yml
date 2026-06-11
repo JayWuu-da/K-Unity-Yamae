@@ -1,0 +1,137 @@
+harness:
+  name: K-Unity-Yamae
+  version: "0.1.0"
+  default_mode: auto
+  report_format: markdown
+  git_diff_timeout: 30
+
+unity:
+  project_path: "."
+  executable: auto
+  allow_batchmode: true
+  default_log_path: .unity-harness/cache/Editor.log
+  test_results_dir: .unity-harness/reports/test-results
+  custom_validation_method: ""
+
+risk:
+  low_max: 29
+  standard_max: 59
+  asset_safe_max: 79
+  migration_min: 80
+
+protected_files:
+  block_direct_write:
+    - "Assets/**/*.meta"
+    - "Assets/**/*.unity"
+    - "Assets/**/*.prefab"
+    - "Assets/**/*.controller"
+    - "Assets/**/*.anim"
+    - "Assets/**/*.overrideController"
+    - "Assets/**/*.playable"
+  escalate_direct_write:
+    - "Assets/**/*.asset"
+    - "Assets/**/*.asmdef"
+    - "Assets/**/*.asmref"
+    - "ProjectSettings/**"
+    - "Packages/manifest.json"
+  never_touch:
+    - "Library/**"
+    - "Temp/**"
+    - "Obj/**"
+    - "Logs/**"
+    - "Builds/**"
+    - "UserSettings/**"
+    - ".vs/**"
+
+file_risk_scores:
+  "Assets/**/*.cs": { base: 10, max: 45 }
+  "Assets/**/*.asmdef": { base: 55, max: 55 }
+  "Assets/**/*.asmref": { base: 55, max: 55 }
+  "Assets/**/*.meta": { base: 80, max: 80 }
+  "Assets/**/*.unity": { base: 85, max: 85 }
+  "Assets/**/*.prefab": { base: 85, max: 85 }
+  "Assets/**/*.asset": { base: 70, max: 70 }
+  "Assets/**/*.controller": { base: 75, max: 75 }
+  "Assets/**/*.anim": { base: 75, max: 75 }
+  "ProjectSettings/**": { base: 80, max: 80 }
+  "Packages/manifest.json": { base: 75, max: 75 }
+
+verification:
+  compile_on_standard: true
+  editmode_tests_on_standard: auto
+  playmode_tests_on_risky: auto
+  fail_on_console_error: true
+  parse_editor_log: true
+  timeouts:
+    compile: 300
+    tests: 600
+    build: 1800
+
+serialization:
+  detect_serialized_renames: true
+  require_formerly_serialized_as: true
+  formerly_serialized_as_window: 500
+
+context:
+  max_memory_chars: 2000
+  max_preview_lines: 50
+  max_files: 10
+  max_file_size: 100000
+
+reporting:
+  include_changed_files: true
+  include_manual_checks: true
+  include_log_paths: true
+  include_risk_score: true
+  slug_max_length: 50
+
+scanner:
+  max_serialization_fields: 20
+  max_sensitive_results: 50
+
+agents:
+  default: mimo
+  backends:
+    codex:
+      enabled: true
+      model: gpt-4o
+      api_key_env: OPENAI_API_KEY
+      temperature: 0.2
+      max_retries: 3
+    claude:
+      enabled: true
+      model: claude-sonnet-4-20250514
+      api_key_env: ANTHROPIC_API_KEY
+      temperature: 0.2
+      max_tokens: 16384
+      max_retries: 3
+    gemini:
+      enabled: true
+      model: gemini-2.5-flash
+      api_key_env: GOOGLE_API_KEY
+      temperature: 0.2
+      max_retries: 3
+    kimi:
+      enabled: true
+      model: moonshot-v1-128k
+      api_key_env: KIMI_API_KEY
+      endpoint: "https://api.moonshot.cn/v1/chat/completions"
+      temperature: 0.2
+      timeout: 120
+      max_retries: 3
+    glm:
+      enabled: true
+      model: glm-4-plus
+      api_key_env: ZHIPU_API_KEY
+      endpoint: "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+      temperature: 0.2
+      timeout: 120
+      max_retries: 3
+    mimo:
+      enabled: true
+      model: mimo-auto
+      api_key_env: MIMO_API_KEY
+      endpoint: "https://api.mimo.ai/v1/chat/completions"
+      temperature: 0.2
+      timeout: 120
+      max_retries: 3
